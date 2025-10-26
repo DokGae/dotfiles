@@ -1,0 +1,15 @@
+# Completions - must be loaded first
+zsh-users/zsh-completions
+
+# Theme
+romkatv/powerlevel10k
+
+# Core functionality
+zsh-users/zsh-autosuggestions
+olets/zsh-abbr
+
+# FZF tab - must be loaded before syntax highlighting
+Aloxaf/fzf-tab
+
+# Syntax highlighting - must be loaded last
+zdharma-continuum/fast-syntax-highlighting

@@ -1,0 +1,259 @@
+# Yazi Shadcn/Vercel Theme - Dark Mode
+# Modern, clean design inspired by shadcn/ui and Vercel's design system
+
+[mgr]
+cwd = { fg = "#fafafa", bold = true }  # Current directory path
+
+# Hovered item - Bold accent for visibility
+hovered = { fg = "#000000", bg = "#fafafa", bold = true }  # Inverted for maximum contrast
+preview_hovered = { fg = "#000000", bg = "#a3a3a3", underline = true }  # Clear preview indication
+
+# Linemode indicators
+linemode = { fg = "#525252" }  # neutral-600 - subtle indicators
+
+# Tab bar - Clean and minimal
+tab_active = { fg = "#fafafa", bg = "#262626" }  # Active tab on neutral-800
+tab_inactive = { fg = "#737373", bg = "#0a0a0a" }  # Inactive on neutral-950
+tab_width = 1
+
+# Find - High visibility accent colors
+find_keyword = { fg = "#000000", bg = "#fb923c", bold = true }  # Orange background for search matches
+find_position = { fg = "#000000", bg = "#c084fc", bold = true }  # Purple background for position
+
+# Selection markers - Clean Vercel-style accents
+marker_selected = { fg = "#000000", bg = "#fafafa", bold = true }  # White selection (Vercel style)
+marker_copied = { fg = "#000000", bg = "#10b981", bold = true }     # emerald-500 for copied
+marker_cut = { fg = "#ffffff", bg = "#dc2626", bold = true }        # red-600 for cut
+
+# Symlink - Distinct cyan
+symlink = { fg = "#22d3ee", italic = true }  # cyan-400
+
+# Border - Very subtle
+border_symbol = "│"
+border_style = { fg = "#262626" }  # neutral-800 - barely visible border
+
+[status]
+separator_open = ""
+separator_close = ""
+separator_style = { fg = "#262626", bg = "#0a0a0a" }  # Subtle separators
+
+# Mode - Minimal style
+mode_normal = { fg = "#fafafa", bg = "#171717" }  # Normal mode
+mode_select = { fg = "#000000", bg = "#fafafa", bold = true }   # Select mode - inverted
+mode_unset = { fg = "#ffffff", bg = "#ea580c", bold = true }   # Unset mode - orange-600
+
+# Progress - Clean indicators
+progress_label = { fg = "#a3a3a3" }  # neutral-400
+progress_normal = { fg = "#3b82f6", bg = "#171717" }  # blue-500 on neutral-900
+progress_error = { fg = "#ef4444", bg = "#171717" }   # red-500 on neutral-900
+
+# Permissions - Gradient from dark to light
+permissions_t = { fg = "#525252" }  # neutral-600
+permissions_r = { fg = "#737373" }  # neutral-500
+permissions_w = { fg = "#a3a3a3" }  # neutral-400
+permissions_x = { fg = "#d4d4d8" }  # zinc-300
+permissions_s = { fg = "#404040" }  # neutral-700
+
+[select]
+# Visual mode selection - Clean highlight
+active = { fg = "#000000", bg = "#fafafa" }  # Inverted selection
+inactive = {}
+
+[input]
+title = { fg = "#fafafa" }  # Clean input title
+value = { fg = "#d4d4d8" }
+selected = { reversed = true }
+
+[completion]
+active = { fg = "#000000", bg = "#fafafa", bold = true }  # High contrast active completion
+inactive = { fg = "#737373" }  # Muted inactive
+
+icon_file = ""
+icon_folder = ""
+icon_command = ""
+
+[tasks]
+title = { fg = "#fafafa" }  # Clean task title
+hovered = { fg = "#000000", bg = "#fafafa", bold = true }  # High contrast hover
+
+[which]
+mask = { bg = "#000000" }  # Pure black background
+cand = { fg = "#fafafa" }  # White candidates
+rest = { fg = "#737373" }  # neutral-500
+desc = { fg = "#a3a3a3" }  # neutral-400
+separator = "  "
+separator_style = { fg = "#262626" }
+
+[help]
+on = { fg = "#60a5fa" }   # blue-400
+run = { fg = "#34d399" }  # emerald-400
+desc = { fg = "#a3a3a3" }  # neutral-400
+hovered = { fg = "#000000", bg = "#fafafa", bold = true }
+footer = { fg = "#737373", bg = "#000000" }
+
+[notify]
+title_info = { fg = "#60a5fa" }   # blue-400
+title_warn = { fg = "#fb923c" }   # orange-400
+title_error = { fg = "#f87171" }  # red-400
+
+icon_info = "ℹ"
+icon_warn = "⚠"
+icon_error = "✕"
+
+[filetype]
+
+rules = [
+	# macOS Applications (.app bundles) - MUST come before folder rule
+	{ name = "*.app/", fg = "#818cf8" },  # indigo-400 - for .app directories
+
+	# Regular folders - Distinct slate-blue color
+	{ name = "*/", fg = "#94a3b8" },  # slate-400 - for all other directories
+
+	# Hidden files and folders - 밝은 회색으로 통일
+	{ name = ".*", fg = "#d1d5db" },  # slate-200 - 은은한 회색
+
+	# Executables - Emerald accent
+	{ name = "*", is = "exec", fg = "#34d399" },  # emerald-400
+
+	# Archives - Amber accent
+	{ name = "*.{zip,tar,gz,bz2,xz,rar,7z,tgz,zst}", fg = "#fbbf24" },  # amber-400
+
+	# Images - Teal
+	{ name = "*.{jpg,jpeg,png,gif,bmp,svg,ico,webp,tiff,psd,ai}", fg = "#2dd4bf" },  # teal-400
+
+	# Videos - Violet
+	{ name = "*.{mp4,avi,mkv,mov,wmv,flv,webm,m4v,mpg,mpeg,3gp}", fg = "#a78bfa" },  # violet-400
+
+	# Audio - Rose
+	{ name = "*.{mp3,wav,flac,aac,ogg,wma,m4a,opus,ape}", fg = "#fb7185" },  # rose-400
+
+	# Documents - Sky
+	{ name = "*.{pdf,doc,docx,xls,xlsx,ppt,pptx,odt,ods,odp}", fg = "#38bdf8" },  # sky-400
+
+	# Plain text - Neutral gray
+	{ name = "*.{txt,text,log}", fg = "#a3a3a3" },  # neutral-400
+
+	# Markdown - Light gray for readability
+	{ name = "*.{md,markdown,mdx}", fg = "#e5e5e5" },  # neutral-200
+
+	# === CODE FILES - Subtle color coding ===
+
+	# Web technologies - Neutral gray
+	{ name = "*.{html,htm,ejs,hbs}", fg = "#d4d4d8" },
+	{ name = "*.{css,scss,sass,less,styl}", fg = "#d4d4d8" },
+	{ name = "*.{js,jsx,mjs,cjs}", fg = "#d4d4d8" },
+	{ name = "*.{ts,tsx,mts,cts}", fg = "#d4d4d8" },
+	{ name = "*.{vue,svelte,astro}", fg = "#d4d4d8" },
+	{ name = "*.{json,jsonc,json5}", fg = "#a3a3a3" },
+
+	# Backend languages - Consistent neutral
+	{ name = "*.{py,pyw,pyc,pyo,pyi}", fg = "#d4d4d8" },
+	{ name = "*.{rb,erb,rake}", fg = "#d4d4d8" },
+	{ name = "*.{go,mod,sum}", fg = "#d4d4d8" },
+	{ name = "*.{rs,rlib}", fg = "#d4d4d8" },
+	{ name = "*.{java,class,jar,war}", fg = "#d4d4d8" },
+	{ name = "*.{kt,kts,ktm}", fg = "#d4d4d8" },
+	{ name = "*.{scala,sc,sbt}", fg = "#d4d4d8" },
+	{ name = "*.{c,h,o}", fg = "#d4d4d8" },
+	{ name = "*.{cpp,cc,cxx,hpp,hxx,h++}", fg = "#d4d4d8" },
+	{ name = "*.{cs,csx,vb,fs,fsx,fsi}", fg = "#d4d4d8" },
+	{ name = "*.{php,phtml,php3,php4,php5,php7,phps}", fg = "#d4d4d8" },
+	{ name = "*.{swift,playground}", fg = "#d4d4d8" },
+	{ name = "*.{m,mm,M}", fg = "#d4d4d8" },
+	{ name = "*.{lua,luac}", fg = "#d4d4d8" },
+	{ name = "*.{r,R,Rmd,Rproj}", fg = "#d4d4d8" },
+	{ name = "*.{jl,julia}", fg = "#d4d4d8" },
+	{ name = "*.{elm}", fg = "#d4d4d8" },
+	{ name = "*.{clj,cljs,cljc,edn}", fg = "#d4d4d8" },
+	{ name = "*.{ex,exs,eex,heex}", fg = "#d4d4d8" },
+	{ name = "*.{dart}", fg = "#d4d4d8" },
+	{ name = "*.{nim,nims}", fg = "#d4d4d8" },
+	{ name = "*.{zig}", fg = "#d4d4d8" },
+
+	# Shell scripts - Slightly brighter
+	{ name = "*.{sh,bash,zsh,fish,nu}", fg = "#e5e5e5" },  # neutral-200
+	{ name = "*.{bat,cmd,ps1,psm1,psd1}", fg = "#e5e5e5" },
+
+	# Config files - Muted
+	{ name = "*.{yaml,yml}", fg = "#a3a3a3" },
+	{ name = "*.{toml,ini,cfg,conf,config}", fg = "#a3a3a3" },
+	{ name = "*.{xml,xsl,xslt,xaml}", fg = "#a3a3a3" },
+	{ name = "*.env*", fg = "#d1d5db" },  # 숨김/환경 파일은 동일한 회색
+	{ name = ".env.local", fg = "#d1d5db" },
+	{ name = ".env.production", fg = "#d1d5db" },
+
+	# Database
+	{ name = "*.{sql,sqlite,sqlite3,db,db3}", fg = "#a3a3a3" },
+
+	# Git files - match 숨김 회색
+	{ name = ".gitignore", fg = "#d1d5db" },  # 숨김 Git 파일도 회색
+	{ name = ".gitmodules", fg = "#d1d5db" },
+	{ name = ".gitattributes", fg = "#d1d5db" },
+	{ name = ".gitconfig", fg = "#d1d5db" },
+
+	# Docker - Blue accent
+	{ name = "Dockerfile*", fg = "#60a5fa" },  # blue-400
+	{ name = ".dockerignore", fg = "#d1d5db" },
+	{ name = "docker-compose*.{yml,yaml}", fg = "#60a5fa" },
+	{ name = "Containerfile", fg = "#60a5fa" },
+
+	# Package/Build files - Clean hierarchy
+	{ name = "package.json", fg = "#fafafa" },
+	{ name = "package-lock.json", fg = "#737373" },
+	{ name = "yarn.lock", fg = "#737373" },
+	{ name = "pnpm-lock.yaml", fg = "#737373" },
+	{ name = "Cargo.toml", fg = "#fafafa" },
+	{ name = "Cargo.lock", fg = "#737373" },
+	{ name = "Gemfile", fg = "#fafafa" },
+	{ name = "Gemfile.lock", fg = "#737373" },
+	{ name = "requirements.txt", fg = "#fafafa" },
+	{ name = "requirements-*.txt", fg = "#737373" },
+	{ name = "pyproject.toml", fg = "#fafafa" },
+	{ name = "poetry.lock", fg = "#737373" },
+	{ name = "go.mod", fg = "#fafafa" },
+	{ name = "go.sum", fg = "#737373" },
+	{ name = "composer.json", fg = "#fafafa" },
+	{ name = "composer.lock", fg = "#737373" },
+
+	# Build files
+	{ name = "Makefile", fg = "#fafafa" },
+	{ name = "makefile", fg = "#fafafa" },
+	{ name = "GNUmakefile", fg = "#fafafa" },
+	{ name = "CMakeLists.txt", fg = "#fafafa" },
+	{ name = "*.cmake", fg = "#a3a3a3" },
+	{ name = "*.gradle", fg = "#a3a3a3" },
+	{ name = "*.gradle.kts", fg = "#a3a3a3" },
+	{ name = "build.gradle", fg = "#fafafa" },
+	{ name = "settings.gradle", fg = "#fafafa" },
+	{ name = "pom.xml", fg = "#fafafa" },
+	{ name = "build.xml", fg = "#fafafa" },
+
+	# Important project files - Bright white (not bold to avoid confusion with folders)
+	{ name = "README*", fg = "#fafafa" },
+	{ name = "LICENSE*", fg = "#fafafa" },
+	{ name = "CHANGELOG*", fg = "#fafafa" },
+	{ name = "CONTRIBUTING*", fg = "#fafafa" },
+	{ name = "AUTHORS*", fg = "#fafafa" },
+	{ name = "CONTRIBUTORS*", fg = "#fafafa" },
+	{ name = "SECURITY*", fg = "#fafafa" },
+	{ name = "CODE_OF_CONDUCT*", fg = "#fafafa" },
+
+	# CI/CD files
+	{ name = ".github", fg = "#d1d5db" },
+	{ name = ".gitlab-ci.yml", fg = "#d1d5db" },
+	{ name = ".travis.yml", fg = "#d1d5db" },
+	{ name = "azure-pipelines.yml", fg = "#d1d5db" },
+	{ name = "Jenkinsfile", fg = "#d1d5db" },
+	{ name = ".circleci", fg = "#d1d5db" },
+
+	# Temporary/Backup - same 회색 유지
+	{ name = "*.{bak,backup,old,orig,tmp,temp,cache,swp,swo,swn}", fg = "#d1d5db", italic = true },
+	{ name = "*~", fg = "#d1d5db", italic = true },
+	{ name = ".DS_Store", fg = "#d1d5db" },
+	{ name = "Thumbs.db", fg = "#d1d5db" },
+	{ name = "desktop.ini", fg = "#d1d5db" },
+
+	# Hidden fallback override - ensures 모든 숨김 파일은 동일 색상
+	{ name = ".*", fg = "#d1d5db" },
+
+]

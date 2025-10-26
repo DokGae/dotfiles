@@ -1,0 +1,153 @@
+# Yazi keymap configuration
+# Official documentation: https://yazi-rs.github.io/docs/configuration/keymap
+
+[mgr]
+
+keymap = [
+	# Navigation - Enter: 디렉터리는 진입, 파일은 Neovim으로 열기
+	{ on = [ "<Enter>" ], run = '''
+		shell --block 'if [ -d "$0" ]; then ya emit enter; else nvim "$0"; fi'
+	''', desc = "Enter directory or open file with Neovim" },
+	{ on = [ "c" ], run = 'shell "code \"$0\"" --confirm', desc = "Open file/folder with VSCode" },
+	{ on = [ "O" ], run = 'shell "code ." --confirm', desc = "Open current folder in VSCode" },
+
+	# Basic navigation
+	{ on = [ "k" ], run = "arrow -1", desc = "Move cursor up" },
+	{ on = [ "j" ], run = "arrow 1", desc = "Move cursor down" },
+	{ on = [ "<Up>" ], run = "arrow -1", desc = "Move cursor up" },
+	{ on = [ "<Down>" ], run = "arrow 1", desc = "Move cursor down" },
+
+	# Go back to parent directory
+	{ on = [ "h" ], run = "leave", desc = "Go back to parent directory" },
+	{ on = [ "<Left>" ], run = "leave", desc = "Go back to parent directory" },
+
+	# Go forward/enter directory
+	{ on = [ "l" ], run = "enter", desc = "Enter the directory" },
+	{ on = [ "<Right>" ], run = "enter", desc = "Enter the directory" },
+
+	# Page navigation
+	{ on = [ "<C-u>" ], run = "arrow -50%", desc = "Move cursor up half page" },
+	{ on = [ "<C-d>" ], run = "arrow 50%", desc = "Move cursor down half page" },
+	{ on = [ "<C-b>" ], run = "arrow -100%", desc = "Move cursor up one page" },
+	{ on = [ "<C-f>" ], run = "arrow 100%", desc = "Move cursor down one page" },
+
+	# Home/End
+	{ on = [ "g", "g" ], run = "arrow -99999999", desc = "Move cursor to the top" },
+	{ on = [ "G" ], run = "arrow 99999999", desc = "Move cursor to the bottom" },
+
+	# File operations
+	{ on = [ "<Space>" ], run = "toggle", desc = "Toggle selection" },
+
+
+
+	# Extract archives with 'x' key
+	{ on = [ "x" ], run = '''
+		shell --block --confirm 'for file in "$@"; do
+			case "$file" in
+				*.zip) unzip -q "$file" -d "${file%.zip}" ;;
+				*.tar.gz|*.tgz) mkdir -p "${file%.tar.gz}" && tar -xzf "$file" -C "${file%.tar.gz}" ;;
+				*.tar.bz2|*.tbz2) mkdir -p "${file%.tar.bz2}" && tar -xjf "$file" -C "${file%.tar.bz2}" ;;
+				*.tar.xz|*.txz) mkdir -p "${file%.tar.xz}" && tar -xJf "$file" -C "${file%.tar.xz}" ;;
+				*.tar) mkdir -p "${file%.tar}" && tar -xf "$file" -C "${file%.tar}" ;;
+				*.rar) unar -q -d "$file" ;;
+				*.7z) 7z x "$file" -o"${file%.7z}" -y ;;
+				*.gz) gunzip -k "$file" ;;
+				*.bz2) bunzip2 -k "$file" ;;
+				*.xz) unxz -k "$file" ;;
+				*) echo "Unsupported format: $file" ;;
+			esac
+		done'
+	''', desc = "Extract archive" },
+
+	# Create
+	{ on = [ "a" ], run = "create", desc = "Create a file or directory" },
+
+	# Copy/Cut/Paste
+	{ on = [ "y", "y" ], run = "yank", desc = "Yank selected files (copy)" },
+	{ on = [ "y", "p" ], run = "copy path", desc = "Copy absolute path(s) to clipboard" },
+	{ on = [ "y", "n" ], run = "copy filename", desc = "Copy filename(s) to clipboard" },
+	{ on = [ "d", "d" ], run = "yank --cut", desc = "Yank selected files (cut)" },
+	{ on = [ "p" ], run = "paste", desc = "Paste yanked files" },
+	{ on = [ "P" ], run = "paste --force", desc = "Paste yanked files (overwrite)" },
+
+	# Delete/Trash
+	{ on = [ "d", "D" ], run = "remove", desc = "Move to trash" },
+	{ on = [ "D" ], run = "remove --permanently", desc = "Delete permanently" },
+
+	# Rename
+	{ on = [ "r" ], run = "rename", desc = "Rename selected file(s)" },
+
+	# Select all
+	{ on = [ "v" ], run = "visual_mode", desc = "Enter visual mode" },
+	{ on = [ "V" ], run = "visual_mode --unset", desc = "Exit visual mode" },
+	{ on = [ "<Esc>" ], run = [ "escape", "select_all --state=false", "unyank" ], desc = "Cancel selection and yank" },
+	{ on = [ "u", "y" ], run = "unyank", desc = "Cancel yank (copy/cut)" },
+	{ on = [ "<C-a>" ], run = "select_all --state=true", desc = "Select all" },
+	{ on = [ "<C-r>" ], run = "select_all --state=none", desc = "Inverse selection" },
+
+	# Search
+	{ on = [ "/" ], run = "find", desc = "Find" },
+	{ on = [ "?" ], run = "find --previous", desc = "Find previous" },
+	{ on = [ "n" ], run = "find_arrow", desc = "Go to next found" },
+	{ on = [ "N" ], run = "find_arrow --previous", desc = "Go to previous found" },
+
+	# Recursive search with fzf (fg = find globally)
+	{ on = [ "f", "g" ], run = '''
+		shell --block 'selected=$(fd --type f --hidden --follow --exclude .git | fzf --height 50% --layout reverse --info inline --border --preview "head -100 {}") && [ -n "$selected" ] && yazi "$selected"'
+	''', desc = "Find files recursively with fzf" },
+
+	# Recursive folder search (fd = find directory)
+	{ on = [ "f", "d" ], run = '''
+		shell --block 'selected=$(fd --type d --hidden --follow --exclude .git | fzf --height 50% --layout reverse --info inline --border) && [ -n "$selected" ] && yazi "$selected"'
+	''', desc = "Find directories recursively with fzf" },
+
+	# Sorting - 정렬 기능 추가
+	{ on = [ "s", "a" ], run = [ "sort alphabetical --dir-first", "linemode size" ], desc = "Sort alphabetically" },
+	{ on = [ "s", "A" ], run = [ "sort alphabetical --reverse --dir-first", "linemode size" ], desc = "Sort alphabetically (reverse)" },
+	{ on = [ "s", "c" ], run = [ "sort created --dir-first", "linemode mtime" ], desc = "Sort by creation time" },
+	{ on = [ "s", "C" ], run = [ "sort created --reverse --dir-first", "linemode mtime" ], desc = "Sort by creation time (reverse)" },
+	{ on = [ "s", "m" ], run = [ "sort modified --dir-first", "linemode mtime" ], desc = "Sort by modified time" },
+	{ on = [ "s", "M" ], run = [ "sort modified --reverse --dir-first", "linemode mtime" ], desc = "Sort by modified time (reverse)" },
+	{ on = [ "s", "n" ], run = [ "sort natural --dir-first", "linemode size" ], desc = "Sort naturally" },
+	{ on = [ "s", "N" ], run = [ "sort natural --reverse --dir-first", "linemode size" ], desc = "Sort naturally (reverse)" },
+	{ on = [ "s", "s" ], run = [ "sort size --dir-first", "linemode size" ], desc = "Sort by size" },
+	{ on = [ "s", "S" ], run = [ "sort size --reverse --dir-first", "linemode size" ], desc = "Sort by size (reverse)" },
+	{ on = [ "s", "r" ], run = "sort random", desc = "Sort randomly" },
+
+	# Zoxide with fzf selection
+	{ on = [ "z" ], run = "plugin zoxide --args=fzf", desc = "Browse zoxide history with fzf and cd" },
+
+	# Tabs - 더 많은 탭 이동 방법 추가
+	{ on = [ "t" ], run = "tab_create --current", desc = "Create a new tab" },
+	{ on = [ "1" ], run = "tab_switch 0", desc = "Switch to tab 1" },
+	{ on = [ "2" ], run = "tab_switch 1", desc = "Switch to tab 2" },
+	{ on = [ "3" ], run = "tab_switch 2", desc = "Switch to tab 3" },
+	{ on = [ "4" ], run = "tab_switch 3", desc = "Switch to tab 4" },
+	{ on = [ "5" ], run = "tab_switch 4", desc = "Switch to tab 5" },
+	{ on = [ "[" ], run = "tab_switch -1 --relative", desc = "Switch to previous tab" },
+	{ on = [ "]" ], run = "tab_switch 1 --relative", desc = "Switch to next tab" },
+	{ on = [ "<Tab>" ], run = "tab_switch 1 --relative", desc = "Switch to next tab" },
+	{ on = [ "<BackTab>" ], run = "tab_switch -1 --relative", desc = "Switch to previous tab" },
+	{ on = [ "{" ], run = "tab_swap -1", desc = "Swap with previous tab" },
+	{ on = [ "}" ], run = "tab_swap 1", desc = "Swap with next tab" },
+	{ on = [ "w" ], run = "tab_close", desc = "Close current tab" },
+
+	# Show/Hide
+	{ on = [ "." ], run = "hidden toggle", desc = "Toggle hidden files" },
+
+	# Shell
+	{ on = [ ";" ], run = "shell", desc = "Open shell" },
+	{ on = [ ":" ], run = "shell --block", desc = "Open shell (block)" },
+
+	# Open in Finder
+	{ on = [ "E" ], run = 'shell "open ."', desc = "Open current folder in Finder" },
+	{ on = [ "e" ], run = 'shell "open -R \"$0\""', desc = "Reveal selected file in Finder" },
+
+	# Quit
+	{ on = [ "q" ], run = "quit", desc = "Quit" },
+	{ on = [ "Q" ], run = "quit --no-cwd-file", desc = "Quit without cwd file" },
+
+	# Help
+	{ on = [ "~" ], run = "help", desc = "Open help" },
+	{ on = [ "g", "~" ], run = "tasks_show", desc = "Show running tasks" },
+]
