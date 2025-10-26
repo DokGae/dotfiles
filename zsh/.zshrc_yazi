@@ -1,0 +1,27 @@
+# Yazi with zoxide integration
+function ya() {
+    local tmp="$(mktemp -t "yazi-cwd.XXXXX")"
+    yazi "$@" --cwd-file="$tmp"
+    if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+        cd -- "$cwd"
+    fi
+    rm -f -- "$tmp"
+}
+
+# Zoxide + Yazi integration
+function yz() {
+    local selected="$(zoxide query -i)"
+    if [ -n "$selected" ]; then
+        cd "$selected" && yazi
+    fi
+}
+
+function yzq() {
+    local query="$1"
+    local selected="$(zoxide query -- "$query" 2>/dev/null)"
+    if [ -n "$selected" ]; then
+        cd "$selected" && yazi
+    else
+        echo "No match found for: $query"
+    fi
+}

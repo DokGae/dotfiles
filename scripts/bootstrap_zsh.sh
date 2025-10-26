@@ -34,7 +34,7 @@ install_debian_deps() {
     return
   fi
 
-  local packages=(zsh git curl fzf zoxide)
+  local packages=(build-essential pkg-config libssl-dev zsh git curl fzf zoxide)
   log 'apt 패키지 설치 확인'
   sudo apt-get update
   sudo apt-get install -y "${packages[@]}"

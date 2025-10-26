@@ -109,6 +109,11 @@ zstyle ':completion:*:descriptions' format '%F{green}-- %d --%f'
 bindkey '^I' fzf-tab-complete  # Tab key
 bindkey '^[[Z' fzf-tab-complete  # Shift-Tab
 
+# Ensure Delete / Backspace keys behave consistently across terminals
+bindkey '^?' backward-delete-char   # Backspace
+bindkey '^H' backward-delete-char   # Ctrl-H terminals
+bindkey '^[[3~' delete-char         # Delete key
+
 # Initialize zoxide if installed
 if command -v zoxide &> /dev/null; then
   eval "$(zoxide init zsh)"
