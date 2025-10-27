@@ -6,7 +6,8 @@ DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
 XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 ZDOTDIR="${ZDOTDIR:-$XDG_CONFIG_HOME/zsh}"
 ANTIDOTE_HOME="${ANTIDOTE_HOME:-$ZDOTDIR/.antidote}"
-PLUGINS_FILE="$DOTFILES_DIR/.config/zsh/.zsh_plugins.txt"
+PLUGINS_FILE="$DOTFILES_DIR/zsh/.config/zsh/.zsh_plugins.txt"
+DEFAULT_STOW_PACKAGES=(atuin btop nvim tmux yazi zsh zsh-abbr)
 
 log() {
   printf '[zsh-bootstrap] %s\n' "$1"
@@ -18,7 +19,7 @@ install_mac_deps() {
     return
   fi
 
-  local packages=(antidote fzf zoxide atuin yazi)
+  local packages=(antidote fzf zoxide atuin yazi stow)
   for pkg in "${packages[@]}"; do
     if ! brew list "$pkg" >/dev/null 2>&1; then
       log "brew install ${pkg} 실행"
@@ -35,7 +36,7 @@ install_debian_deps() {
     return
   fi
 
-  local packages=(build-essential pkg-config libssl-dev zsh git curl fzf zoxide)
+  local packages=(build-essential pkg-config libssl-dev zsh git curl fzf zoxide stow)
   log 'apt 패키지 설치 확인'
   sudo apt-get update
   sudo apt-get install -y "${packages[@]}"
@@ -72,21 +73,59 @@ install_antidote() {
   git clone https://github.com/mattmc3/antidote.git "$ANTIDOTE_HOME"
 }
 
-link_file() {
-  local src="$1"
-  local dest="$2"
+cleanup_legacy_links() {
+  local legacy
+  for legacy in atuin btop nvim tmux yazi zsh zsh-abbr; do
+    local link_path="$HOME/.config/$legacy"
+    if [ -L "$link_path" ]; then
+      local target
+      target=$(readlink "$link_path")
+      if [[ "$target" == "$DOTFILES_DIR/.config/$legacy"* ]]; then
+        log "이전 링크 제거: $link_path -> $target"
+        rm "$link_path"
+      fi
+    fi
+  done
 
-  if [ ! -e "$src" ]; then
-    log "원본 파일이 없습니다: $src"
+  local zshenv_link="$HOME/.zshenv"
+  if [ -L "$zshenv_link" ]; then
+    local target
+    target=$(readlink "$zshenv_link")
+    if [[ "$target" == "$DOTFILES_DIR/.zshenv"* ]]; then
+      log "이전 .zshenv 링크 제거"
+      rm "$zshenv_link"
+    fi
+  fi
+}
+
+stow_packages() {
+  if ! command -v stow >/dev/null 2>&1; then
+    log 'stow를 찾을 수 없습니다. 설치 후 다시 실행하세요.'
     return 1
   fi
 
-  if [ -L "$dest" ] || [ -f "$dest" ] || [ -d "$dest" ]; then
-    log "기존 $dest를 새 링크로 교체합니다."
+  local -a packages
+  if [ -n "${STOW_PACKAGES:-}" ]; then
+    read -r -a packages <<<"${STOW_PACKAGES}"
+  else
+    packages=(${DEFAULT_STOW_PACKAGES[@]})
   fi
 
-  mkdir -p "$(dirname "$dest")"
-  ln -snf "$src" "$dest"
+  (
+    cd "$DOTFILES_DIR" || return 1
+    local pkg
+    for pkg in "${packages[@]}"; do
+      if [ ! -d "$pkg" ]; then
+        log "패키지 디렉터리가 없습니다: $DOTFILES_DIR/$pkg"
+        continue
+      fi
+      log "stow --restow ${pkg} 실행"
+      if ! stow --restow "$pkg"; then
+        log "${pkg} 패키지 stow 중 충돌이 발생했습니다. 기존 파일을 정리한 뒤 다시 실행하세요."
+        return 1
+      fi
+    done
+  )
 }
 
 preload_plugins() {
@@ -103,6 +142,11 @@ preload_plugins() {
 
   if ! command -v zsh >/dev/null 2>&1; then
     log 'zsh가 없어 프리패치를 건너뜁니다.'
+    return
+  fi
+
+  if [ ! -f "$PLUGINS_FILE" ]; then
+    log "플러그인 목록 파일을 찾을 수 없어 프리패치를 건너뜁니다: $PLUGINS_FILE"
     return
   fi
 
@@ -130,8 +174,12 @@ main() {
   install_antidote
   mkdir -p "$(dirname "$ZDOTDIR")"
 
-  link_file "$DOTFILES_DIR/.zshenv" "$HOME/.zshenv"
-  link_file "$DOTFILES_DIR/.config/zsh" "$ZDOTDIR"
+  cleanup_legacy_links
+
+  if ! stow_packages; then
+    log 'stow 작업이 실패해 스크립트를 종료합니다.'
+    exit 1
+  fi
 
   preload_plugins
 
