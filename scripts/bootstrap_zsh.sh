@@ -3,9 +3,10 @@ set -euo pipefail
 
 # dotfiles 기준 경로 설정
 DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
-ZDOTDIR="${ZDOTDIR:-$HOME}"
+XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+ZDOTDIR="${ZDOTDIR:-$XDG_CONFIG_HOME/zsh}"
 ANTIDOTE_HOME="${ANTIDOTE_HOME:-$ZDOTDIR/.antidote}"
-PLUGINS_FILE="$DOTFILES_DIR/zsh/.zsh_plugins.txt"
+PLUGINS_FILE="$DOTFILES_DIR/.config/zsh/.zsh_plugins.txt"
 
 log() {
   printf '[zsh-bootstrap] %s\n' "$1"
@@ -80,10 +81,11 @@ link_file() {
     return 1
   fi
 
-  if [ -L "$dest" ] || [ -f "$dest" ]; then
+  if [ -L "$dest" ] || [ -f "$dest" ] || [ -d "$dest" ]; then
     log "기존 $dest를 새 링크로 교체합니다."
   fi
 
+  mkdir -p "$(dirname "$dest")"
   ln -snf "$src" "$dest"
 }
 
@@ -126,9 +128,10 @@ main() {
   esac
 
   install_antidote
+  mkdir -p "$(dirname "$ZDOTDIR")"
 
-  link_file "$DOTFILES_DIR/zsh/.zshrc" "$ZDOTDIR/.zshrc"
-  link_file "$DOTFILES_DIR/zsh/.zsh_plugins.txt" "$ZDOTDIR/.zsh_plugins.txt"
+  link_file "$DOTFILES_DIR/.zshenv" "$HOME/.zshenv"
+  link_file "$DOTFILES_DIR/.config/zsh" "$ZDOTDIR"
 
   preload_plugins
 

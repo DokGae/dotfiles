@@ -34,8 +34,8 @@ function yz() {
     rm -f "$tmp"
   fi
 }
-# PATH configuration
-export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+# PATH configuration (user 바이너리 우선)
+export PATH="$HOME/.cargo/bin:$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 
 # Make zsh-autosuggestions readable but subtly faded vs prompt
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#9ca3af'
@@ -238,7 +238,7 @@ export VISUAL='code'
 # export EDITOR='nvim'  # for Neovim
 # export EDITOR='cursor'  # for Cursor
 # export EDITOR='subl'  # for Sublime Text
-source ~/.zshrc_yazi
+source "${ZDOTDIR:-$HOME/.config/zsh}/.zshrc_yazi"
 
 # Zellij
 
